@@ -1,0 +1,89 @@
+<html>
+  <style>
+  .frame {
+    overflow: hidden;
+  }
+  .slide:first-child {
+    opacity: 0.2;
+  }
+  .slide:last-child {
+    opacity: 0.2;
+  }
+  </style>
+  <body>
+    <div class="frame">
+      <div class="slide">
+        <h1>abc</h1>
+        123 123123
+      </div>
+      <div class="slide">
+        <h1>def</h1>
+        234 234 23
+      </div>
+      <div class="slide">
+        <h1>qwe</h1>
+        34 345 435
+      </div>
+      <div class="slide">
+        <h1>rty</h1>
+        456456 546 456
+      </div>
+      <div class="slide">
+        <h1>bnm</h1>
+        567765 56  7567
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script>
+    //(function ($) {
+      var slideIdx = function (idx, offset) {
+        return (idx + offset + this.length) % this.length;
+      };
+      $('.frame').on('update-active', function (e, delta) {
+        var $this = $(this),
+            slides = $this.data('slides'),
+            active = slideIdx.call(slides, $this.data('active'), delta),
+            newSlide,
+            idx = 0;
+        $this.data('active', active);
+        switch (delta) {
+          case 1:
+            idx = slideIdx.call(slides, active, delta);
+            newSlide = slides[idx];
+            $this.append(newSlide);
+            $this.children().first().remove();
+            break;
+          case -1:
+            idx = slideIdx.call(slides, active, delta);
+            newSlide = slides[idx];
+            $this.prepend(newSlide);
+            $this.children().last().remove();
+            break;
+          case 0:
+            $this.append($([slides[slides.length - 1], slides[0], slides[1]]));
+            console.log('populate');
+            break;
+        }
+      });
+      $('body').keydown(function (e) {
+        switch (e.keyCode) {
+          case 37:
+            $('.frame').trigger('update-active', 1);
+            break;
+          case 39:
+            $('.frame').trigger('update-active', -1);
+            break;
+          default:
+            break;
+        }
+        //e.preventDefault();
+      });
+      $('.frame')
+      .data('slides', $('.slide').detach())
+      .data('active', 0)
+      .trigger('update-active', 0);
+    //}) (window.jQuery)
+  </script>
+</html>
+
