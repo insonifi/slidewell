@@ -1,0 +1,15 @@
+.frame {
+  overflow: hidden;
+}
+.pad {
+  position: fixed;
+  height: 100%;
+}
+.slide:first-child {
+  opacity: 0.1;
+  height: inherit;
+}
+.slide:last-child {
+  opacity: 0.1;
+  height: inherit;
+}
