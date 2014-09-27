@@ -1,76 +1,83 @@
-//(function ($) {
-  var slideIdx = function (idx, offset) {
-    return (idx + offset + this.length) % this.length;
-  };
-  $('.frame').on('update-active', function (e, delta) {
-    var $this = $(this),
-        $pad = $this.children(),
-        $children,
-        slides = $this.data('slides'),
-        translateOffset = 0,
-        active = slideIdx.call(slides, $this.data('active'), delta),
-        newSlide,
-        rate = 350,
-        idx = 0;
-    $this.data('active', active);
-    translateOffset = $(window).height()/3;
-    idx = slideIdx.call(slides, active, delta);
-    newSlide = $(slides[idx]).addClass('slide');
-    switch (delta) {
-      case 1:
-        $pad.append(newSlide);
-        //translateOffset = $(window).height()//$children.slice(1,2).height();
-        $pad.animate({
-          top: '-=' + translateOffset + 'px'
-        }, rate, function () {
-          $pad.children().first().remove()
-          .css({
-            top: '0'
-          });
-        });
-        break;
-      case -1:
-        $pad.prepend(newSlide);
-        //translateOffset = $(window).height()//$children.slice(1,2).height();
-        $pad.animate({
-          top: '+=' + translateOffset + 'px'
-        }, rate, function () {
-          $pad.children().last().remove()
-          .css({
-            top: '0'
-          });
-        });
-        break;
+(function (Slidewell, $) {
+  var slideArr = function (idx) {
+    var indices = [idx - 1, idx, idx + 1],
+        nIdx = 0,
+        len = this.length,
+        offsetArr = [],
+        i = 3;
+    for (;i--;) {
+      nIdx = (indices[i] + len) % len
+      offsetArr.push(this[nIdx]);
     }
-  })
-  .on('init', function () {
+    return offsetArr;
+  },
+  getId = function () {
+    return Math.random().toString().slice(2,7);
+  },
+  updateActive = function (e, delta) {
     var $this = $(this),
-        slides = $this.data('slides'),
-        pad = $(document.createElement('div'));
-    pad.addClass('pad')
-    .append($([slides[slides.length - 1], slides[0], slides[1]]))
+        id = this.id,
+        frameHeight = Slidewell[id].frameHeight,
+        $pad = $this.find('.pad'),
+        pad = $pad[0],
+        slides = Slidewell[id].slides,
+        active = (Slidewell[id].active + delta + slides.length) % slides.length,
+        rate = Slidewell.rate;
+    Slidewell[id].active = active;
+    $pad.stop(true, true);
+    $pad.animate({
+      top: '+=' + (delta * frameHeight) + 'px',
+    }, rate, function () {
+      pad.style.top = Slidewell[id].pos;
+      $pad.empty()
+      .append(slideArr.call(slides, active))
+    });
+    return true;
+  },
+  init = function () {
+    var $this = $(this),
+        id = this.id,
+        slides = Slidewell[id].slides,
+        $pad = $(document.createElement('div'));
+    $pad.addClass('pad')
+    .append([slides[slides.length - 1], slides[0], slides[1]])
     .appendTo($this);
+    Slidewell[id].frameHeight = $this.height();
+    Slidewell[id].pos = -$this.find('.slide')[1].offsetTop;
+    $pad[0].style.top = Slidewell[id].pos;
     console.log('populate');
-  });
-  $('body').keydown(function (e) {
-    switch (e.keyCode) {
-      case 37:
+  },
+  processKey = function (e) {
+    var inputRate = Slidewell.rate / 5;//ms
+    clearTimeout(Slidewell.throttleTimer);
+    Slidewell.throttleTimer = setTimeout(function () {
+      if (e.keyCode === 39) {
         $('.frame').trigger('update-active', 1);
-        console.log('<<');
-        break;
-      case 39:
+        //console.log('<<');
+      }
+      if (e.keyCode === 37) {
         $('.frame').trigger('update-active', -1);
-        console.log('>>');
-        break;
-      default:
-        break;
-    }
-    //e.preventDefault();
+        //console.log('>>');
+      }
+    }, inputRate);
+  };
+  Slidewell.rate = 300;
+  $('.frame').on('update-active', updateActive)
+  .on('init', init);
+  $('body').keydown(processKey)
+  .click(function (e) {
+    e.preventDefault();
   });
   $('.frame').each(function () {
-    var $this = $(this);
-    $this.data('slides', $this.children('.slide').detach())
-    .data('active', 0)
-    .trigger('init');
+    var $this = $(this),
+        id = getId();
+    this.id = id;
+    Slidewell[id] = {};
+    Slidewell[id].slides = $this.find('.slide').css({
+      width: $this.width(),
+      height: $this.height()
+    }).detach();
+    Slidewell[id].active = 0;
+    $this.trigger('init');
   });
-//}) (window.jQuery)
+}) (window.Slidewell || {}, window.jQuery)
