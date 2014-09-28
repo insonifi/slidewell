@@ -27,7 +27,7 @@
     state.active = active;
     $pad.stop(true, true);
     if (delta > 0) {
-      initSlide($pad.find('.slide:first')[0], state);
+      initSlide($pad.find('.slide:first')[0]);
     }
     $pad.animate({
       top: '+=' + (delta * frameHeight) + 'px',
@@ -51,16 +51,13 @@
         active = slide.getAttribute('active-item') | 0,
         nextItem = active + delta;
     if (nextItem < 0) {
-      console.debug('%s < 0', nextItem);
       slide.setAttribute('active-item', -1);
       return
     }
     if (nextItem > (items)) {
-      console.debug('%s > %s', nextItem, state.items);
       slide.setAttribute('active-item', items);
       return
     }
-    console.log(nextItem);
     $slide.find('[order="#"]'.replace('#', nextItem)).toggle(rate);
     if (delta === 0) {
       slide.setAttribute('active-item', nextItem - 1);
@@ -74,6 +71,7 @@
         state = Slidewell[id],
         slides = state.slides,
         $pad = $(document.createElement('div'));
+
     $(slides).each(function () {
       var maxOrder = -1;
       $(this).find("[order]").each(function () {
@@ -84,15 +82,20 @@
       });
       this.setAttribute('last-item', maxOrder);
     });
+    
     $pad.addClass('pad')
-    .append([slides[slides.length - 1], initSlide(slides[0], state), slides[1]])
+    .append([
+      slides[slides.length - 1], 
+      initSlide(slides[0]),
+      initSlide(slides[1])
+    ])
     .appendTo($this);
     state.frameHeight = $this.height();
     state.pos = -$this.find('.slide')[1].offsetTop;
     $pad[0].style.top = state.pos;
     console.log('populate');
   },
-  initSlide = function (slide, state) {
+  initSlide = function (slide) {
     var $items = $(slide).find("[order]");
     $items.hide();
     slide.setAttribute('active-item', -1);

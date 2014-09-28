@@ -1,20 +1,23 @@
 .frame {
   overflow: hidden;
-  border: 1px dashed grey;
+  border: 1px dashed steelblue;
   border-radius: 1em;
-  width: 12em;
+  width: 15em;
   height: 9em;
+  margin: 1em;
 }
 .pad {
   top: -133%;
   width: 100%;
   position: relative;
-}/*
-.slide {
 }
-.slide:first-child {
-  opacity: 0.01;
+.stress {
+  font-family: monospace;
+  border: 1px dotted grey;
 }
-.slide:last-child {
-  opacity: 0.01;
-}*/
+body {
+  color: darkslategrey;
+}
+h1 {
+  color: indianred;
+}

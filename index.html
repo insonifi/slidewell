@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
   </head> 
   <body>
-    <div style="position: fixed; left: 50%;">
+    <div style="position: fixed; left: 30%;">
       <div class="frame">
         <div class="slide">
           <h1>one</h1>
+          <div>&#x25B6; &mdash; go to next slide</div>
         </div>
         <div class="slide">
           <h1>two</h1>
+          <div>for next item, press &mdash; &#x25BC;</div>
+          <div order="1">for previous &mdash; &#x25B2;</div>
         </div>
         <div class="slide">
           <h1>three</h1>
+          <div>Each presentation resides in <span class="stress">frame</span>-class element. &#x25BC;</div>
         </div>
         <div class="slide">
           <h1>four</h1>
@@ -29,9 +33,11 @@
         </div>
         <div class="slide">
           <h1>ein</h1>
+          <div order="1">&#x25C0; &mdash; go to previous slide</div>
         </div>
         <div class="slide">
           <h1>zwei</h1>
+          <div order="0">Each slide is <span class="stress">slide</span>-class element. &#x25BC;</div>
         </div>
         <div class="slide">
           <h1>drei</h1>
@@ -47,29 +53,38 @@
         </div>
         <div class="slide">
           <h1>cinque</h1>
+          <div order="2">it keeps state when you go backwards</div>
         </div>
         <div class="slide">
           <h1>uno</h1>
+          <div order="1">Any element with <span class="stress">order="#"</span> attribute &#x25BC;</div>
         </div>
         <div class="slide">
           <h1>due</h1>
+          <div>Then just load</div>
+          <span class="stress">&lt;script src="slidewell.js"/&gt;</span>
         </div>
         <div class="slide">
           <h1>tre</h1>
         </div>
       </div>
-      <div class="frame" style="height: 20em">
+      <div class="frame" style="height: 12em">
         <div class="slide">
           <h1>3</h1>
-          <h2 order="2">step 2</h2>
-          <div order="0">step 0</div>
-          <div order="1">step 1</div>
+          <div>Welcome to <h1>Slidewell</h1></div>
         </div>
         <div class="slide">
           <h1>4</h1>
+          <h3 order="3">And item 4</h3>
+          <ul>
+            <li order="0">item 1 (<span class="stress">order="0"</span>)</li>
+            <li order="2">item 2 (<span class="stress">order="2"</span>)</li>
+            <li order="1">item 3 (<span class="stress">order="1"</span>)</li>
+          </ul>
         </div>
         <div class="slide">
           <h1>5</h1>
+          <div order="2">All other elements are displayed instantly&#x25B6;</div>
         </div>
         <div class="slide">
           <h1>1</h1>
@@ -81,10 +96,11 @@
       <div class="frame">
         <div class="slide">
           <h1>B</h1>
-          <div order="3">:P</div>
+          <div order="1">:P</div>
         </div>
         <div class="slide">
           <h1>C</h1>
+          <div order="2">Basically, it's just HTML. &#x25B6;</div>
         </div>
         <div class="slide">
           <h1>D</h1>
