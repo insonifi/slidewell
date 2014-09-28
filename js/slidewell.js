@@ -27,7 +27,7 @@
     state.active = active;
     $pad.stop(true, true);
     if (delta > 0) {
-      initSlide($pad.find('.slide:first'), state);
+      initSlide($pad.find('.slide:first')[0], state);
     }
     $pad.animate({
       top: '+=' + (delta * frameHeight) + 'px',
@@ -46,23 +46,26 @@
         rate = Slidewell.rate,
         $pad = $this.find('.pad'),
         $slide = $pad.find('.slide').eq(1),
-        nextItem = state.lastItem + delta;
+        slide = $slide[0],
+        items = slide.getAttribute('last-item') | 0,
+        active = slide.getAttribute('active-item') | 0,
+        nextItem = active + delta;
     if (nextItem < 0) {
       console.debug('%s < 0', nextItem);
-      state.lastItem = -1;
+      slide.setAttribute('active-item', -1);
       return
     }
-    if (nextItem > (state.items)) {
+    if (nextItem > (items)) {
       console.debug('%s > %s', nextItem, state.items);
-      state.lastItem = state.items;
+      slide.setAttribute('active-item', items);
       return
     }
     console.log(nextItem);
     $slide.find('[order="#"]'.replace('#', nextItem)).toggle(rate);
     if (delta === 0) {
-      state.lastItem -= 1;
+      slide.setAttribute('active-item', nextItem - 1);
     } else {
-      state.lastItem = nextItem;
+      slide.setAttribute('active-item', nextItem);
     }
   },
   init = function () {
@@ -71,6 +74,16 @@
         state = Slidewell[id],
         slides = state.slides,
         $pad = $(document.createElement('div'));
+    $(slides).each(function () {
+      var maxOrder = -1;
+      $(this).find("[order]").each(function () {
+        var order = this.getAttribute('order');
+        if (maxOrder < order) {
+          maxOrder = order;
+        }
+      });
+      this.setAttribute('last-item', maxOrder);
+    });
     $pad.addClass('pad')
     .append([slides[slides.length - 1], initSlide(slides[0], state), slides[1]])
     .appendTo($this);
@@ -80,12 +93,9 @@
     console.log('populate');
   },
   initSlide = function (slide, state) {
-    var $items = $(slide).find("[order]"),
-        $last = $items.last();
-    state.lastItem = -1;
-    state.items = $last.length === 0 ? 0 : ($last.attr('order') | 0);
+    var $items = $(slide).find("[order]");
     $items.hide();
-    slide.setAttribute('item', 0);
+    slide.setAttribute('active-item', -1);
     return slide
   },
   processKey = function (e) {
